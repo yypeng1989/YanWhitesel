@@ -1,0 +1,66 @@
+﻿@model IEnumerable<SearchNameCodeFirst.Models.People>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken();
+
+    <Table class="table">
+        <tr style="border:hidden;">
+            <th style="width:30%;">
+                @Html.DisplayName("Name")
+                @Html.TextBox("Name")
+            </th>
+            <th>
+                <input type="button" id="Search" value="Search">
+            </th>
+        </tr>      
+    </Table>
+}
+
+<div id="Form3">
+    @Html.Partial("PeoplePartial")
+</div>
+<div id="Loading">
+    <img src="~/Image/loading.gif" alt="Image" style="height:30px; width:30px; align-self:center; display:none" id="LoadingImage"/>
+</div>
+
+<script>
+    $("#Search").click(function () {
+        var Name = $("#Name").val();
+        var Url = '@Url.Action("Search", "People")?Name=' + Name;
+
+        $.ajax({
+            type: "POST",
+            data: "",
+            url: Url,
+            beforeSend: function () {
+                $("#Form3").html('<p>We are getting your data. Please wait...</p><br>');
+                $("#LoadingImage").show();
+            },
+            success: function (result) {
+                $("#Form3").html(result);
+            },
+            complete: function () {
+                $("#LoadingImage").hide();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+                alert(thrownError);
+            }
+        });
+    });
+
+</script>
+
+
+
